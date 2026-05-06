@@ -6,11 +6,34 @@
   <title>Nairobi Perfumes</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<header>
-  <h1>NAIROBI PERFUMES</h1>
-  <p>Luxury Arabic & Designer Fragrances</p>
+    <div id="cart-overlay" class="cart-overlay" onclick="toggleCart()"></div>
+<header class="main-header">
+
+  <div class="header-left">
+    <h1 class="logo">NAIROBI PERFUMES</h1>
+  </div>
+
+  <div class="header-center">
+    <div class="search-wrapper">
+      <input type="text" id="searchBar" placeholder="Search perfumes..." />
+    </div>
+  </div>
+
+  <div class="header-right">
+
+    <div class="cart-icon" id="cart-icon" onclick="toggleCart()">
+      🛒 <span id="cart-count">0</span>
+    </div>
+
+    <div class="hamburger" onclick="toggleMenu()">
+      ☰
+    </div>
+
+  </div>
+
 </header>
 
 <nav>
@@ -22,24 +45,14 @@
 <section class="hero">
   <h2>Discover Your Signature Scent</h2>
   <p>Premium Arabic & Designer Perfumes in Nairobi</p>
-  <button>Shop Now</button>
+  <button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+    Shop Now
+  </button>
 </section>
 
-<section class="products">
+<section class="products" id="products">
   <h2>Our Collection</h2>
-
-  <div class="product">
-    <img src="images/perfume1.jpg" alt="">
-    <h3>Arabic Oud</h3>
-    <p>KSh 4,500</p>
-  </div>
-
-  <div class="product">
-    <img src="images/perfume2.jpg" alt="">
-    <h3>Designer Fragrance</h3>
-    <p>KSh 6,000</p>
-  </div>
-
+  <div id="products-container"></div>
 </section>
 
 <section class="contact">
@@ -51,8 +64,45 @@
 <footer>
   <p>© 2026 Nairobi Perfumes</p>
 </footer>
+
 <a href="https://wa.me/254113505681" target="_blank" class="whatsapp">
   Order on WhatsApp
 </a>
+
+<!-- SCRIPTS -->
+<script src="products.js"></script>
+<script src="main.js"></script>
+
+<div id="cart-panel" class="cart-panel">
+  <h3>Your Cart</h3>
+
+  <div id="cart-items"></div>
+
+  <p id="cart-total"></p>
+
+  <button onclick="checkoutCart()" class="checkout-btn">
+    Checkout on WhatsApp
+  </button>
+
+  <button onclick="toggleCart()" class="close-btn">
+    Close
+  </button>
+</div>
+
+<div id="quick-view" class="quick-view">
+  <div class="quick-view-content">
+    <span class="close-quick" onclick="closeQuickView()">×</span>
+
+    <img id="qv-image" src="" alt="">
+    <h2 id="qv-name"></h2>
+    <p id="qv-price"></p>
+
+    <div class="quick-actions">
+      <button id="qv-whatsapp">Order on WhatsApp</button>
+      <button id="qv-cart">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
