@@ -19,7 +19,6 @@ let activeFilters = {
 
 function showToast(message, type = "info") {
   const container = document.getElementById("toast-container");
-
   if (!container) return;
 
   const toast = document.createElement("div");
@@ -28,9 +27,7 @@ function showToast(message, type = "info") {
 
   container.appendChild(toast);
 
-  setTimeout(() => {
-    toast.remove();
-  }, 3000);
+  setTimeout(() => toast.remove(), 3000);
 }
 
 // ============================
@@ -39,11 +36,7 @@ function showToast(message, type = "info") {
 
 function getBadge(product) {
   if (product.badge) return product.badge;
-
-  if ((product.rating || 0) >= 4.8) {
-    return "Top Rated";
-  }
-
+  if ((product.rating || 0) >= 4.8) return "Top Rated";
   return "";
 }
 
@@ -69,11 +62,7 @@ function displayProducts(list) {
       <img
         src="${product.image}"
         alt="${product.name}"
-        onclick="openQuickView(
-          '${product.name}',
-          ${product.price},
-          '${product.image}'
-        )"
+        onclick="openQuickView('${product.name}', ${product.price}, '${product.image}')"
       >
 
       <h3>${product.name}</h3>
@@ -103,20 +92,13 @@ function displayProducts(list) {
 
       <div class="product-actions">
 
-        <button
-          class="whatsapp-btn"
-          onclick="window.open(
-            'https://wa.me/254113505681?text=I want ${product.name}',
-            '_blank'
-          )"
-        >
+        <button class="whatsapp-btn"
+          onclick="window.open('https://wa.me/254113505681?text=I want ${product.name}', '_blank')">
           Order on WhatsApp
         </button>
 
-        <button
-          class="cart-btn"
-          onclick="addToCart('${product.name}', ${product.price}, ${product.stock || 999})"
-        >
+        <button class="cart-btn"
+          onclick="addToCart('${product.name}', ${product.price}, ${product.stock || 999})">
           Add to Cart
         </button>
 
@@ -155,7 +137,7 @@ searchBar?.addEventListener("input", (e) => {
 
   suggestionsBox.innerHTML = "";
 
-  if (value === "") {
+  if (!value) {
     suggestionsBox.style.display = "none";
     return;
   }
@@ -177,8 +159,7 @@ searchBar?.addEventListener("input", (e) => {
     suggestionsBox.appendChild(div);
   });
 
-  suggestionsBox.style.display =
-    filtered.length ? "block" : "none";
+  suggestionsBox.style.display = filtered.length ? "block" : "none";
 });
 
 // ============================
@@ -189,21 +170,15 @@ function applyFilters() {
   let filtered = products;
 
   if (activeFilters.category !== "all") {
-    filtered = filtered.filter(p =>
-      p.category === activeFilters.category
-    );
+    filtered = filtered.filter(p => p.category === activeFilters.category);
   }
 
   if (activeFilters.gender) {
-    filtered = filtered.filter(p =>
-      p.gender === activeFilters.gender
-    );
+    filtered = filtered.filter(p => p.gender === activeFilters.gender);
   }
 
   if (activeFilters.brand) {
-    filtered = filtered.filter(p =>
-      p.brand === activeFilters.brand
-    );
+    filtered = filtered.filter(p => p.brand === activeFilters.brand);
   }
 
   return filtered;
@@ -221,11 +196,8 @@ function addToCart(name, price, stock = 999) {
 
   const item = cart.find(i => i.name === name);
 
-  if (item) {
-    item.qty++;
-  } else {
-    cart.push({ name, price, qty: 1 });
-  }
+  if (item) item.qty++;
+  else cart.push({ name, price, qty: 1 });
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
@@ -256,14 +228,11 @@ function bounceCart() {
   if (!cartIcon) return;
 
   cartIcon.classList.add("bounce");
-
-  setTimeout(() => {
-    cartIcon.classList.remove("bounce");
-  }, 400);
+  setTimeout(() => cartIcon.classList.remove("bounce"), 400);
 }
 
 // ============================
-// CART PANEL
+// CART TOGGLE
 // ============================
 
 function toggleCart() {
@@ -282,6 +251,21 @@ function toggleCart() {
     overlay.style.display = "block";
     renderCart();
   }
+}
+
+// ============================
+// CHECKOUT FIX (🔥 IMPORTANT)
+// ============================
+
+function checkoutCart() {
+  if (!cart || cart.length === 0) {
+    showToast("Your cart is empty", "error");
+    return;
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  window.location.href = "checkout.html";
 }
 
 // ============================
@@ -321,9 +305,7 @@ function renderCart() {
           <button onclick="changeQty(${index}, 1)">+</button>
         </div>
 
-        <button class="remove-btn" onclick="removeItem(${index})">
-          ❌
-        </button>
+        <button class="remove-btn" onclick="removeItem(${index})">❌</button>
 
       </div>
     `;
@@ -338,21 +320,16 @@ function renderCart() {
 
 function removeItem(index) {
   cart.splice(index, 1);
-
   localStorage.setItem("cart", JSON.stringify(cart));
-
   updateCartCount();
   renderCart();
-
   showToast("Item removed", "info");
 }
 
 function changeQty(index, change) {
   cart[index].qty += change;
 
-  if (cart[index].qty <= 0) {
-    cart.splice(index, 1);
-  }
+  if (cart[index].qty <= 0) cart.splice(index, 1);
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
@@ -375,10 +352,7 @@ function openQuickView(name, price, image) {
   document.getElementById("qv-price").innerText = "KSh " + price;
 
   document.getElementById("qv-whatsapp").onclick = () => {
-    window.open(
-      "https://wa.me/254113505681?text=I want " + name,
-      "_blank"
-    );
+    window.open("https://wa.me/254113505681?text=I want " + name, "_blank");
   };
 
   document.getElementById("qv-cart").onclick = () => {
@@ -387,8 +361,7 @@ function openQuickView(name, price, image) {
 }
 
 function closeQuickView() {
-  const modal = document.getElementById("quick-view");
-  if (modal) modal.style.display = "none";
+  document.getElementById("quick-view")?.style.setProperty("display", "none");
 }
 
 // ============================
@@ -416,3 +389,17 @@ setInterval(() => {
   if (currentSlide >= slides.length) currentSlide = 0;
   showSlide(currentSlide);
 }, 4000);
+
+// ============================
+// ESC CLOSE CART
+// ============================
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    const panel = document.getElementById("cart-panel");
+    const overlay = document.getElementById("cart-overlay");
+
+    panel?.classList.remove("open");
+    if (overlay) overlay.style.display = "none";
+  }
+});

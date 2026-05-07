@@ -11,37 +11,37 @@
 <body>
 
 <!-- CART OVERLAY -->
-<div id="cart-overlay" class="cart-overlay" onclick="toggleCart()"></div>
+<div id="cart-overlay" onclick="toggleCart()"></div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
 
 <!-- =========================
 HEADER
 ========================= -->
 <header class="main-header">
 
-  <!-- LEFT -->
   <div class="header-left">
     <h1 class="logo">NAIROBI PERFUMES</h1>
   </div>
 
-  <!-- CENTER -->
   <div class="header-center">
 
     <div class="search-wrapper">
 
-  <input
-    type="text"
-    id="searchBar"
-    placeholder="Search perfumes..."
-    autocomplete="off"
-  />
+      <input
+        type="text"
+        id="searchBar"
+        placeholder="Search perfumes..."
+        autocomplete="off"
+      />
 
-  <div id="searchSuggestions" class="search-suggestions"></div>
+      <div id="searchSuggestions" class="search-suggestions"></div>
 
-</div>
+    </div>
 
   </div>
 
-  <!-- RIGHT -->
   <div class="header-right">
 
     <div class="cart-icon" id="cart-icon" onclick="toggleCart()">
@@ -57,67 +57,37 @@ HEADER
 </header>
 
 <!-- =========================
-FILTERS BAR
+FILTERS
 ========================= -->
 <section class="filters-section">
 
   <div class="filters-scroll">
 
-    <!-- CATEGORY -->
-    <button
-      class="filter-btn active"
-      data-type="category"
-      data-value="all"
-      onclick="filterCategory('all')">
+    <button class="filter-btn active" data-type="category" data-value="all" onclick="filterCategory('all')">
       All
     </button>
 
-    <button
-      class="filter-btn"
-      data-type="category"
-      data-value="Arabic"
-      onclick="filterCategory('Arabic')">
+    <button class="filter-btn" data-type="category" data-value="Arabic" onclick="filterCategory('Arabic')">
       Arabic
     </button>
 
-    <!-- GENDER -->
-    <button
-      class="filter-btn"
-      data-type="gender"
-      data-value="Men"
-      onclick="filterGender('Men')">
+    <button class="filter-btn" data-type="gender" data-value="Men" onclick="filterGender('Men')">
       Men
     </button>
 
-    <button
-      class="filter-btn"
-      data-type="gender"
-      data-value="Women"
-      onclick="filterGender('Women')">
+    <button class="filter-btn" data-type="gender" data-value="Women" onclick="filterGender('Women')">
       Women
     </button>
 
-    <button
-      class="filter-btn"
-      data-type="gender"
-      data-value="Unisex"
-      onclick="filterGender('Unisex')">
+    <button class="filter-btn" data-type="gender" data-value="Unisex" onclick="filterGender('Unisex')">
       Unisex
     </button>
 
-    <!-- BRAND -->
-    <button
-      class="filter-btn"
-      data-type="brand"
-      data-value="Lattafa"
-      onclick="filterBrand('Lattafa')">
+    <button class="filter-btn" data-type="brand" data-value="Lattafa" onclick="filterBrand('Lattafa')">
       Lattafa
     </button>
 
-    <!-- RESET -->
-    <button
-      class="filter-btn reset-btn"
-      onclick="resetFilters()">
+    <button class="filter-btn reset-btn" onclick="resetFilters()">
       Reset
     </button>
 
@@ -139,52 +109,31 @@ HERO
 ========================= -->
 <section class="hero">
 
-  <!-- SLIDE 1 -->
   <div class="hero-slide active">
     <div class="hero-content">
       <h2>Luxury Arabic Perfumes</h2>
-
-      <p>
-        Discover premium long-lasting fragrances in Nairobi
-      </p>
-
-      <button
-        class="hero-btn"
-        onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <p>Discover premium long-lasting fragrances in Nairobi</p>
+      <button class="hero-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
         Shop Collection
       </button>
     </div>
   </div>
 
-  <!-- SLIDE 2 -->
   <div class="hero-slide">
     <div class="hero-content">
       <h2>Best Sellers Collection</h2>
-
-      <p>
-        Shop trending Lattafa & designer fragrances
-      </p>
-
-      <button
-        class="hero-btn"
-        onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <p>Shop trending Lattafa & designer fragrances</p>
+      <button class="hero-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
         Explore Best Sellers
       </button>
     </div>
   </div>
 
-  <!-- SLIDE 3 -->
   <div class="hero-slide">
     <div class="hero-content">
       <h2>Elegant Scents For Every Occasion</h2>
-
-      <p>
-        Men's, women's & unisex luxury perfumes
-      </p>
-
-      <button
-        class="hero-btn"
-        onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      <p>Men's, women's & unisex luxury perfumes</p>
+      <button class="hero-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
         Browse Products
       </button>
     </div>
@@ -211,7 +160,6 @@ CONTACT
   <h2>Contact Us</h2>
 
   <p>📞 0113505681</p>
-
   <p>📍 HH Towers F11, Nairobi</p>
 
 </section>
@@ -223,36 +171,32 @@ FOOTER
   <p>© 2026 Nairobi Perfumes</p>
 </footer>
 
-<!-- FLOATING WHATSAPP -->
-<a
-  href="https://wa.me/254113505681"
-  target="_blank"
-  class="whatsapp">
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/254113505681" target="_blank" class="whatsapp">
   WhatsApp
 </a>
 
 <!-- =========================
-CART PANEL
+CART DRAWER (UPDATED)
 ========================= -->
 <div id="cart-panel" class="cart-panel">
 
-  <h3>Your Cart</h3>
+  <div class="cart-header">
+    <h3>🛍 Your Cart</h3>
+    <button onclick="toggleCart()">✕</button>
+  </div>
 
   <div id="cart-items"></div>
 
-  <p id="cart-total"></p>
+  <div class="cart-footer">
 
-  <button
-    onclick="checkoutCart()"
-    class="checkout-btn">
-    Checkout
-  </button>
+    <p id="cart-total"></p>
 
-  <button
-    onclick="toggleCart()"
-    class="close-btn">
-    Close
-  </button>
+    <button onclick="checkoutCart()" class="checkout-btn">
+      Proceed to Checkout
+    </button>
+
+  </div>
 
 </div>
 
@@ -263,9 +207,7 @@ QUICK VIEW
 
   <div class="quick-view-content">
 
-    <span class="close-quick" onclick="closeQuickView()">
-      ×
-    </span>
+    <span class="close-quick" onclick="closeQuickView()">×</span>
 
     <img id="qv-image" src="" alt="">
 
@@ -289,11 +231,11 @@ QUICK VIEW
 
 </div>
 
-<!-- SCRIPTS -->
+<!-- =========================
+SCRIPTS
+========================= -->
 <script src="products.js"></script>
 <script src="main.js"></script>
-
-<div id="toast-container"></div>
 
 </body>
 </html>

@@ -2,105 +2,102 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Checkout - Nairobi Perfumes</title>
+
+  <!-- ✅ THIS IS THE FIX -->
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<h1 style="text-align:center;">Checkout</h1>
+<div class="checkout">
 
-<div class="checkout-container">
+  <h1>Checkout</h1>
 
-  <div id="checkout-items"></div>
-  <h3 id="checkout-total"></h3>
+  <!-- LEFT -->
+  <div class="checkout-form">
+    <input placeholder="Name">
+    <input placeholder="Phone">
+    <input placeholder="Location">
 
-  <!-- CUSTOMER FORM -->
-  <div class="customer-form">
-
-    <input type="text" id="customer-name" placeholder="Your Name" required>
-
-    <input type="text" id="customer-phone" placeholder="Phone Number" required>
-
-    <input type="text" id="customer-location" placeholder="Delivery Location" required>
-
-    <!-- ✅ DELIVERY DROPDOWN (FIXED) -->
-    <select id="delivery-area">
-      <option value="0">Select Delivery Area</option>
-      <option value="200">CBD - KSh 200</option>
-      <option value="300">Westlands - KSh 300</option>
-      <option value="400">Kilimani - KSh 400</option>
-      <option value="500">Outside Nairobi - KSh 500</option>
+    <select>
+      <option>Select Delivery Area</option>
+      <option>CBD</option>
+      <option>Westlands</option>
+      <option>Kilimani</option>
     </select>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="order-summary">
+
+    <h3>Your Order</h3>
+
+    <div id="checkout-items"></div>
+
+    <div class="order-total" id="checkout-total"></div>
+
+    <div class="checkout-actions">
+
+      <button class="checkout-btn" onclick="sendOrder()">
+  Pay via WhatsApp
+</button>
+
+<button class="checkout-secondary" onclick="alert('Online payments coming soon (M-Pesa / Card)')">
+  Pay Online (M-Pesa / Card)
+</button>
+
+<button class="checkout-secondary" onclick="window.location.href='index.html'">
+  Continue Shopping
+</button>
+
+
+    </div>
 
   </div>
 
-  <button onclick="sendOrder()" class="checkout-btn">
-    Confirm Order on WhatsApp
-  </button>
-
 </div>
+
+<script src="main.js"></script>
 
 <script>
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-function renderCheckout() {
-  const container = document.getElementById("checkout-items");
-  const totalBox = document.getElementById("checkout-total");
-
-  let total = 0;
-  container.innerHTML = "";
-
-  cart.forEach(item => {
-    total += item.price * item.qty;
-
-    container.innerHTML += `
-      <div style="margin-bottom:10px;">
-        <strong>${item.name}</strong><br>
-        ${item.qty} x KSh ${item.price}
-      </div>
-    `;
-  });
-
-  totalBox.innerText = "Subtotal: KSh " + total;
-}
-
 function sendOrder() {
-  const name = document.getElementById("customer-name").value;
-  const phone = document.getElementById("customer-phone").value;
-  const location = document.getElementById("customer-location").value;
-  const delivery = parseInt(document.getElementById("delivery-area").value);
 
-  if (!name || !phone || !location || delivery === 0) {
+  const name = document.querySelector(".checkout-form input:nth-child(1)").value;
+  const phone = document.querySelector(".checkout-form input:nth-child(2)").value;
+  const location = document.querySelector(".checkout-form input:nth-child(3)").value;
+  const delivery = document.querySelector(".checkout-form select").value;
+
+  if (!name || !phone || !location || !delivery) {
     alert("Please fill all details");
     return;
   }
 
-  let message = `Hello, I want to order:%0A%0A`;
-  message += `Name: ${name}%0A`;
-  message += `Phone: ${phone}%0A`;
-  message += `Location: ${location}%0A`;
-  message += `Delivery Fee: KSh ${delivery}%0A%0A`;
+  let message = `🛍 *New Order - Nairobi Perfumes*%0A%0A`;
+
+  message += `👤 Name: ${name}%0A`;
+  message += `📞 Phone: ${phone}%0A`;
+  message += `📍 Location: ${location}%0A`;
+  message += `🚚 Delivery: ${delivery}%0A%0A`;
 
   let total = 0;
 
   cart.forEach(item => {
-    message += `${item.name} x ${item.qty} = KSh ${item.price * item.qty}%0A`;
+    message += `• ${item.name} x ${item.qty} = KSh ${item.price * item.qty}%0A`;
     total += item.price * item.qty;
   });
 
-  total += delivery;
+  message += `%0A💰 Total: KSh ${total}`;
 
-  message += `%0ATotal (with delivery): KSh ${total}`;
-
-  window.open("https://wa.me/254113505681?text=" + message, "_blank");
-
-  if (cart.length === 0) {
-  alert("Your cart is empty");
-  return;
+  window.open(
+    "https://wa.me/254113505681?text=" + message,
+    "_blank"
+  );
 }
-}
-
-renderCheckout();
 </script>
 
 </body>
