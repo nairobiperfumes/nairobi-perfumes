@@ -14,14 +14,31 @@ let activeFilters = {
 };
 
 // ============================
+// TOAST NOTIFICATION
+// ============================
+
+function showToast(message, type = "info") {
+  const container = document.getElementById("toast-container");
+
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.classList.add("toast", type);
+  toast.textContent = message;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
+
+// ============================
 // BADGES
 // ============================
 
 function getBadge(product) {
-
-  if (product.badge) {
-    return product.badge;
-  }
+  if (product.badge) return product.badge;
 
   if ((product.rating || 0) >= 4.8) {
     return "Top Rated";
@@ -35,17 +52,15 @@ function getBadge(product) {
 // ============================
 
 function displayProducts(list) {
+  if (!container) return;
 
   container.innerHTML = "";
 
   list.forEach(product => {
-
     const div = document.createElement("div");
-
     div.classList.add("product");
 
     div.innerHTML = `
-
       ${getBadge(product)
         ? `<div class="badge">${getBadge(product)}</div>`
         : ""
@@ -68,23 +83,16 @@ function displayProducts(list) {
           ? `
             <div class="rating">
               <span class="rating-stars">★★★★★</span>
-              <span class="rating-number">
-                ${product.rating}
-              </span>
-              <span class="review-count">
-                (${product.reviews || 0} reviews)
-              </span>
+              <span class="rating-number">${product.rating}</span>
+              <span class="review-count">(${product.reviews || 0} reviews)</span>
             </div>
           `
           : ""
       }
 
       <p class="price">
-
         <del>KSh ${product.oldPrice}</del>
-
         <strong>KSh ${product.price}</strong>
-
       </p>
 
       ${
@@ -107,7 +115,7 @@ function displayProducts(list) {
 
         <button
           class="cart-btn"
-          onclick="addToCart('${product.name}', ${product.price})"
+          onclick="addToCart('${product.name}', ${product.price}, ${product.stock || 999})"
         >
           Add to Cart
         </button>
@@ -127,13 +135,12 @@ displayProducts(products);
 updateCartCount();
 
 // ============================
-// SMART SEARCH
+// SEARCH
 // ============================
 
 const suggestionsBox = document.getElementById("searchSuggestions");
 
 searchBar?.addEventListener("input", (e) => {
-
   const value = e.target.value.toLowerCase().trim();
 
   let filtered = applyFilters();
@@ -144,7 +151,7 @@ searchBar?.addEventListener("input", (e) => {
 
   displayProducts(filtered);
 
-  // CLEAR SUGGESTIONS
+  if (!suggestionsBox) return;
 
   suggestionsBox.innerHTML = "";
 
@@ -153,27 +160,18 @@ searchBar?.addEventListener("input", (e) => {
     return;
   }
 
-  // SHOW TOP MATCHES
-
   filtered.slice(0, 5).forEach(product => {
-
     const div = document.createElement("div");
-
     div.classList.add("search-suggestion-item");
-
     div.innerText = product.name;
 
     div.onclick = () => {
-
       searchBar.value = product.name;
-
       suggestionsBox.style.display = "none";
-
       displayProducts([product]);
 
-      document
-        .getElementById("products")
-        .scrollIntoView({ behavior: "smooth" });
+      document.getElementById("products")
+        ?.scrollIntoView({ behavior: "smooth" });
     };
 
     suggestionsBox.appendChild(div);
@@ -183,152 +181,79 @@ searchBar?.addEventListener("input", (e) => {
     filtered.length ? "block" : "none";
 });
 
-// HIDE WHEN CLICK OUTSIDE
-
-document.addEventListener("click", (e) => {
-
-  if (!e.target.closest(".search-wrapper")) {
-    suggestionsBox.style.display = "none";
-  }
-});
-
 // ============================
 // FILTERS
 // ============================
 
 function applyFilters() {
-
   let filtered = products;
 
   if (activeFilters.category !== "all") {
-    filtered = filtered.filter(
-      product => product.category === activeFilters.category
+    filtered = filtered.filter(p =>
+      p.category === activeFilters.category
     );
   }
 
   if (activeFilters.gender) {
-    filtered = filtered.filter(
-      product => product.gender === activeFilters.gender
+    filtered = filtered.filter(p =>
+      p.gender === activeFilters.gender
     );
   }
 
   if (activeFilters.brand) {
-    filtered = filtered.filter(
-      product => product.brand === activeFilters.brand
+    filtered = filtered.filter(p =>
+      p.brand === activeFilters.brand
     );
   }
 
   return filtered;
 }
 
-function filterCategory(value) {
-
-  activeFilters.category = value;
-
-  displayProducts(applyFilters());
-
-  updateActiveButtons();
-}
-
-function filterGender(value) {
-
-  activeFilters.gender = value;
-
-  displayProducts(applyFilters());
-
-  updateActiveButtons();
-}
-
-function filterBrand(value) {
-
-  activeFilters.brand = value;
-
-  displayProducts(applyFilters());
-
-  updateActiveButtons();
-}
-
-function resetFilters() {
-
-  activeFilters = {
-    category: "all",
-    gender: null,
-    brand: null
-  };
-
-  searchBar.value = "";
-
-  displayProducts(products);
-
-  updateActiveButtons();
-}
-
 // ============================
-// ACTIVE BUTTONS
+// CART SYSTEM
 // ============================
 
-function updateActiveButtons() {
-
-  document.querySelectorAll(".filter-btn").forEach(btn => {
-
-    btn.classList.remove("active");
-
-    const type = btn.dataset.type;
-    const value = btn.dataset.value;
-
-    if (
-      (type === "category" && value === activeFilters.category) ||
-      (type === "gender" && value === activeFilters.gender) ||
-      (type === "brand" && value === activeFilters.brand)
-    ) {
-      btn.classList.add("active");
-    }
-  });
-}
-
-// ============================
-// CART
-// ============================
-
-function addToCart(name, price) {
+function addToCart(name, price, stock = 999) {
+  if (stock <= 0) {
+    showToast("Sorry, this item is out of stock", "error");
+    return;
+  }
 
   const item = cart.find(i => i.name === name);
 
   if (item) {
     item.qty++;
   } else {
-    cart.push({
-      name,
-      price,
-      qty: 1
-    });
+    cart.push({ name, price, qty: 1 });
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
   updateCartCount();
-
   renderCart();
-
   bounceCart();
+
+  showToast(`${name} added to cart`, "success");
 }
 
+// ============================
+// CART COUNT
+// ============================
+
 function updateCartCount() {
-
   const count = document.getElementById("cart-count");
-
   if (!count) return;
 
   count.innerText = cart.reduce((a, b) => a + b.qty, 0);
 }
 
 // ============================
-// CART BOUNCE
+// BOUNCE CART
 // ============================
 
 function bounceCart() {
-
   const cartIcon = document.getElementById("cart-icon");
+  if (!cartIcon) return;
 
   cartIcon.classList.add("bounce");
 
@@ -338,75 +263,65 @@ function bounceCart() {
 }
 
 // ============================
-// CART UI
+// CART PANEL
 // ============================
 
 function toggleCart() {
-
   const panel = document.getElementById("cart-panel");
-
   const overlay = document.getElementById("cart-overlay");
+
+  if (!panel || !overlay) return;
 
   const isOpen = panel.classList.contains("open");
 
   if (isOpen) {
-
     panel.classList.remove("open");
-
     overlay.style.display = "none";
-
   } else {
-
     panel.classList.add("open");
-
     overlay.style.display = "block";
-
     renderCart();
   }
 }
 
+// ============================
+// RENDER CART
+// ============================
+
 function renderCart() {
-
   const container = document.getElementById("cart-items");
-
   const totalBox = document.getElementById("cart-total");
+
+  if (!container || !totalBox) return;
 
   container.innerHTML = "";
 
   let total = 0;
 
-  cart.forEach((item, index) => {
+  if (cart.length === 0) {
+    container.innerHTML = "<p>Your cart is empty</p>";
+    totalBox.innerHTML = "<strong>Total: KSh 0</strong>";
+    return;
+  }
 
+  cart.forEach((item, index) => {
     total += item.price * item.qty;
 
     container.innerHTML += `
-
       <div class="cart-item">
 
         <div>
-          <strong>${item.name}</strong>
-          <br>
+          <strong>${item.name}</strong><br>
           KSh ${item.price}
         </div>
 
         <div class="qty-controls">
-
-          <button onclick="changeQty(${index}, -1)">
-            −
-          </button>
-
+          <button onclick="changeQty(${index}, -1)">−</button>
           <span>${item.qty}</span>
-
-          <button onclick="changeQty(${index}, 1)">
-            +
-          </button>
-
+          <button onclick="changeQty(${index}, 1)">+</button>
         </div>
 
-        <button
-          class="remove-btn"
-          onclick="removeItem(${index})"
-        >
+        <button class="remove-btn" onclick="removeItem(${index})">
           ❌
         </button>
 
@@ -414,23 +329,25 @@ function renderCart() {
     `;
   });
 
-  totalBox.innerHTML =
-    `<strong>Total: KSh ${total}</strong>`;
+  totalBox.innerHTML = `<strong>Total: KSh ${total}</strong>`;
 }
 
-function removeItem(index) {
+// ============================
+// CART ACTIONS
+// ============================
 
+function removeItem(index) {
   cart.splice(index, 1);
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
   updateCartCount();
-
   renderCart();
+
+  showToast("Item removed", "info");
 }
 
 function changeQty(index, change) {
-
   cart[index].qty += change;
 
   if (cart[index].qty <= 0) {
@@ -440,13 +357,7 @@ function changeQty(index, change) {
   localStorage.setItem("cart", JSON.stringify(cart));
 
   updateCartCount();
-
   renderCart();
-}
-
-function checkoutCart() {
-
-  window.location.href = "checkout.html";
 }
 
 // ============================
@@ -454,17 +365,16 @@ function checkoutCart() {
 // ============================
 
 function openQuickView(name, price, image) {
+  const modal = document.getElementById("quick-view");
+  if (!modal) return;
 
-  document.getElementById("quick-view").style.display = "flex";
+  modal.style.display = "flex";
 
   document.getElementById("qv-image").src = image;
-
   document.getElementById("qv-name").innerText = name;
-
   document.getElementById("qv-price").innerText = "KSh " + price;
 
   document.getElementById("qv-whatsapp").onclick = () => {
-
     window.open(
       "https://wa.me/254113505681?text=I want " + name,
       "_blank"
@@ -472,14 +382,13 @@ function openQuickView(name, price, image) {
   };
 
   document.getElementById("qv-cart").onclick = () => {
-
     addToCart(name, price);
   };
 }
 
 function closeQuickView() {
-
-  document.getElementById("quick-view").style.display = "none";
+  const modal = document.getElementById("quick-view");
+  if (modal) modal.style.display = "none";
 }
 
 // ============================
@@ -487,34 +396,23 @@ function closeQuickView() {
 // ============================
 
 function toggleMenu() {
-
-  document.querySelector("nav").classList.toggle("show-nav");
+  document.querySelector("nav")?.classList.toggle("show-nav");
 }
+
 // ============================
 // HERO SLIDER
 // ============================
 
 const slides = document.querySelectorAll(".hero-slide");
-
 let currentSlide = 0;
 
 function showSlide(index) {
-
-  slides.forEach(slide => {
-    slide.classList.remove("active");
-  });
-
-  slides[index].classList.add("active");
+  slides.forEach(s => s.classList.remove("active"));
+  slides[index]?.classList.add("active");
 }
 
 setInterval(() => {
-
   currentSlide++;
-
-  if (currentSlide >= slides.length) {
-    currentSlide = 0;
-  }
-
+  if (currentSlide >= slides.length) currentSlide = 0;
   showSlide(currentSlide);
-
 }, 4000);
