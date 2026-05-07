@@ -21,7 +21,9 @@ const products = [
     brand: "Lattafa",
     image: "images/yara.jpg",
     badge: "Best for ladies",
-    stock: 5
+    Rating: 4.9,
+    reviews: 60,    
+    stock: 12
   },
   {
     name: "Yara Candy",
@@ -78,7 +80,10 @@ const products = [
     category: "Arabic",
     gender: "Unisex",
     brand: "Lattafa",
-    image: "images/ana-rouge.jpg"
+    image: "images/ana-rouge.jpg",
+    reviews: 5,
+    rating: 4.6,
+    stock: 22
   },
   {
     name: "Ana Abiyedh Coral",
