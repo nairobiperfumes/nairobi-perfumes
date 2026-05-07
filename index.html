@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nairobi Perfumes</title>
-
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nairobi Perfumes</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<!-- CART OVERLAY -->
-<div id="cart-overlay" onclick="toggleCart()"></div>
+<!-- OVERLAY -->
+<div id="cart-overlay" class="cart-overlay" onclick="toggleCart()"></div>
 
-<!-- TOAST CONTAINER -->
+<!-- TOAST -->
 <div id="toast-container"></div>
 
-<!-- =========================
-HEADER
-========================= -->
+<!-- HEADER -->
 <header class="main-header">
 
   <div class="header-left">
@@ -26,26 +23,21 @@ HEADER
   </div>
 
   <div class="header-center">
-
     <div class="search-wrapper">
-
       <input
         type="text"
         id="searchBar"
         placeholder="Search perfumes..."
         autocomplete="off"
       />
-
       <div id="searchSuggestions" class="search-suggestions"></div>
-
     </div>
-
   </div>
 
   <div class="header-right">
 
     <div class="cart-icon" id="cart-icon" onclick="toggleCart()">
-      🛒 <span id="cart-count">0</span>
+      <span id="cart-count">0</span>
     </div>
 
     <div class="hamburger" onclick="toggleMenu()">
@@ -56,117 +48,71 @@ HEADER
 
 </header>
 
-<!-- =========================
-FILTERS
-========================= -->
+<!-- FILTERS -->
 <section class="filters-section">
-
   <div class="filters-scroll">
 
-    <button class="filter-btn active" data-type="category" data-value="all" onclick="filterCategory('all')">
-      All
-    </button>
-
-    <button class="filter-btn" data-type="category" data-value="Arabic" onclick="filterCategory('Arabic')">
-      Arabic
-    </button>
-
-    <button class="filter-btn" data-type="gender" data-value="Men" onclick="filterGender('Men')">
-      Men
-    </button>
-
-    <button class="filter-btn" data-type="gender" data-value="Women" onclick="filterGender('Women')">
-      Women
-    </button>
-
-    <button class="filter-btn" data-type="gender" data-value="Unisex" onclick="filterGender('Unisex')">
-      Unisex
-    </button>
-
-    <button class="filter-btn" data-type="brand" data-value="Lattafa" onclick="filterBrand('Lattafa')">
-      Lattafa
-    </button>
-
-    <button class="filter-btn reset-btn" onclick="resetFilters()">
-      Reset
-    </button>
+    <button class="filter-btn active" onclick="filterCategory('all')">All</button>
+    <button class="filter-btn" onclick="filterCategory('Arabic')">Arabic</button>
+    <button class="filter-btn" onclick="filterGender('Men')">Men</button>
+    <button class="filter-btn" onclick="filterGender('Women')">Women</button>
+    <button class="filter-btn" onclick="filterGender('Unisex')">Unisex</button>
+    <button class="filter-btn" onclick="filterBrand('Lattafa')">Lattafa</button>
+    <button class="filter-btn reset-btn" onclick="resetFilters()">Reset</button>
 
   </div>
-
 </section>
 
-<!-- =========================
-NAV
-========================= -->
+<!-- NAV -->
 <nav>
   <a href="#">Home</a>
   <a href="#products">Shop</a>
   <a href="#contact">Contact</a>
 </nav>
 
-<!-- =========================
-HERO
-========================= -->
+<!-- HERO -->
 <section class="hero">
 
-  <div class="hero-slide active">
+  <div class="hero-slide active slide-1">
     <div class="hero-content">
       <h2>Luxury Arabic Perfumes</h2>
       <p>Discover premium long-lasting fragrances in Nairobi</p>
-      <button class="hero-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
-        Shop Collection
-      </button>
+      <button class="hero-btn" onclick="scrollToProducts()">Shop Collection</button>
     </div>
   </div>
 
-  <div class="hero-slide">
+  <div class="hero-slide slide-2">
     <div class="hero-content">
       <h2>Best Sellers Collection</h2>
       <p>Shop trending Lattafa & designer fragrances</p>
-      <button class="hero-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
-        Explore Best Sellers
-      </button>
+      <button class="hero-btn" onclick="scrollToProducts()">Explore Best Sellers</button>
     </div>
   </div>
 
-  <div class="hero-slide">
+  <div class="hero-slide slide-3">
     <div class="hero-content">
       <h2>Elegant Scents For Every Occasion</h2>
       <p>Men's, women's & unisex luxury perfumes</p>
-      <button class="hero-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
-        Browse Products
-      </button>
+      <button class="hero-btn" onclick="scrollToProducts()">Browse Products</button>
     </div>
   </div>
 
 </section>
 
-<!-- =========================
-PRODUCTS
-========================= -->
+<!-- PRODUCTS -->
 <section class="products" id="products">
-
   <h2>Our Collection</h2>
-
   <div id="products-container"></div>
-
 </section>
 
-<!-- =========================
-CONTACT
-========================= -->
+<!-- CONTACT -->
 <section class="contact" id="contact">
-
   <h2>Contact Us</h2>
-
-  <p>📞 0113505681</p>
-  <p>📍 HH Towers F11, Nairobi</p>
-
+  <p>0113505681</p>
+  <p>HH Towers F11, Nairobi</p>
 </section>
 
-<!-- =========================
-FOOTER
-========================= -->
+<!-- FOOTER -->
 <footer>
   <p>© 2026 Nairobi Perfumes</p>
 </footer>
@@ -176,64 +122,44 @@ FOOTER
   WhatsApp
 </a>
 
-<!-- =========================
-CART DRAWER (UPDATED)
-========================= -->
+<!-- CART -->
 <div id="cart-panel" class="cart-panel">
 
   <div class="cart-header">
-    <h3>🛍 Your Cart</h3>
+    <h3>Your Cart</h3>
     <button onclick="toggleCart()">✕</button>
   </div>
 
   <div id="cart-items"></div>
 
   <div class="cart-footer">
-
     <p id="cart-total"></p>
-
     <button onclick="checkoutCart()" class="checkout-btn">
       Proceed to Checkout
     </button>
-
   </div>
 
 </div>
 
-<!-- =========================
-QUICK VIEW
-========================= -->
+<!-- QUICK VIEW -->
 <div id="quick-view" class="quick-view">
 
   <div class="quick-view-content">
-
     <span class="close-quick" onclick="closeQuickView()">×</span>
 
     <img id="qv-image" src="" alt="">
-
     <h2 id="qv-name"></h2>
-
     <p id="qv-price"></p>
 
     <div class="quick-actions">
-
-      <button id="qv-whatsapp">
-        Order on WhatsApp
-      </button>
-
-      <button id="qv-cart">
-        Add to Cart
-      </button>
-
+      <button id="qv-whatsapp">Order on WhatsApp</button>
+      <button id="qv-cart">Add to Cart</button>
     </div>
 
   </div>
 
 </div>
 
-<!-- =========================
-SCRIPTS
-========================= -->
 <script src="products.js"></script>
 <script src="main.js"></script>
 

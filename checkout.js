@@ -9,6 +9,8 @@ function renderCheckout() {
   const container = document.getElementById("checkout-items");
   const totalBox = document.getElementById("checkout-total");
 
+  if (!container || !totalBox) return;
+
   let total = 0;
 
   container.innerHTML = "";
@@ -18,21 +20,20 @@ function renderCheckout() {
     total += item.price * item.qty;
 
     container.innerHTML += `
-      <div class="checkout-item">
-        <strong>${item.name}</strong><br>
-        ${item.qty} x KSh ${item.price}
+      <div class="order-item">
+        <span>${item.name} x ${item.qty}</span>
+        <span>KSh ${item.price * item.qty}</span>
       </div>
     `;
-
   });
 
-  totalBox.innerText = "Subtotal: KSh " + total;
+  totalBox.innerHTML = `Total: KSh ${total}`;
 }
 
 renderCheckout();
 
 // ============================
-// WHATSAPP CHECKOUT
+// WHATSAPP ORDER
 // ============================
 
 function sendWhatsAppOrder() {
@@ -45,41 +46,35 @@ function sendWhatsAppOrder() {
   const name = document.getElementById("customer-name").value;
   const phone = document.getElementById("customer-phone").value;
   const location = document.getElementById("customer-location").value;
-  const delivery = parseInt(document.getElementById("delivery-area").value);
+  const delivery = document.getElementById("delivery-area").value;
 
-  if (!name || !phone || !location || delivery === 0) {
+  if (!name || !phone || !location || !delivery) {
     alert("Please fill all details");
     return;
   }
 
-  let message = `🛍 NEW ORDER - NAIROBI PERFUMES%0A%0A`;
+  let message = `🛍 NEW ORDER - NAIROBI PERFUMES\n\n`;
 
-  message += `Name: ${name}%0A`;
-  message += `Phone: ${phone}%0A`;
-  message += `Location: ${location}%0A`;
-  message += `Delivery: KSh ${delivery}%0A%0A`;
+  message += `Name: ${name}\n`;
+  message += `Phone: ${phone}\n`;
+  message += `Location: ${location}\n`;
+  message += `Delivery Area: ${delivery}\n\n`;
 
   let total = 0;
 
   cart.forEach(item => {
-    message += `${item.name} x${item.qty} = KSh ${item.price * item.qty}%0A`;
+
+    message += `${item.name} x${item.qty} = KSh ${item.price * item.qty}\n`;
+
     total += item.price * item.qty;
   });
 
-  total += delivery;
+  message += `\nTOTAL: KSh ${total}`;
 
-  message += `%0ATOTAL: KSh ${total}`;
+  const encodedMessage = encodeURIComponent(message);
 
   window.open(
-    "https://wa.me/254113505681?text=" + message,
+    `https://wa.me/254113505681?text=${encodedMessage}`,
     "_blank"
   );
-}
-
-// ============================
-// FUTURE PAYMENT GATEWAY
-// ============================
-
-function payOnline() {
-  alert("Stripe / M-Pesa integration coming next 🚀");
 }

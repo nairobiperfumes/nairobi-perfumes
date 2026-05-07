@@ -600,3 +600,111 @@ footer {
 
   text-decoration: none;
 }
+
+/* =========================
+HERO BACKGROUNDS
+========================= */
+
+.slide-1 {
+  background:
+    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+    url('images/hero1.jpg');
+}
+
+.slide-2 {
+  background:
+    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+    url('images/hero2.jpg');
+}
+
+.slide-3 {
+  background:
+    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+    url('images/hero3.jpg');
+}
+
+.slide-1,
+.slide-2,
+.slide-3 {
+  background-size: cover;
+  background-position: center;
+}
+
+/* =========================
+SEARCH SUGGESTIONS
+========================= */
+
+.search-suggestions {
+  position: absolute;
+  top: 60px;
+  left: 0;
+
+  width: 100%;
+
+  background: #111;
+
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  display: none;
+
+  z-index: 9999;
+
+  border: 1px solid #222;
+}
+
+.search-suggestion-item {
+  padding: 12px 15px;
+
+  cursor: pointer;
+
+  border-bottom: 1px solid #222;
+}
+
+.search-suggestion-item:hover {
+  background: #1c1c1c;
+}
+
+/* =========================
+TOAST
+========================= */
+
+#toast-container {
+  position: fixed;
+
+  top: 100px;
+  right: 20px;
+
+  z-index: 99999;
+}
+
+.toast {
+  background: gold;
+  color: black;
+
+  padding: 12px 18px;
+
+  border-radius: 10px;
+
+  margin-bottom: 10px;
+
+  font-weight: bold;
+}
+
+/* =========================
+HERO CONTENT
+========================= */
+
+.hero-content {
+  max-width: 700px;
+  padding: 20px;
+}
+
+.hero-content h2 {
+  margin-bottom: 15px;
+}
+
+.hero-content p {
+  margin-bottom: 25px;
+}

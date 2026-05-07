@@ -2,10 +2,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const container = document.getElementById("products-container");
 const searchBar = document.getElementById("searchBar");
-
-// ============================
-// FILTER STATE
-// ============================
+const suggestionsBox = document.getElementById("searchSuggestions");
 
 let activeFilters = {
   category: "all",
@@ -13,26 +10,26 @@ let activeFilters = {
   brand: null
 };
 
-// ============================
-// TOAST NOTIFICATION
-// ============================
+function scrollToProducts() {
+  document.getElementById("products")?.scrollIntoView({
+    behavior: "smooth"
+  });
+}
 
-function showToast(message, type = "info") {
+function showToast(message, type = "success") {
   const container = document.getElementById("toast-container");
   if (!container) return;
 
   const toast = document.createElement("div");
-  toast.classList.add("toast", type);
-  toast.textContent = message;
+  toast.className = `toast ${type}`;
+  toast.innerText = message;
 
   container.appendChild(toast);
 
-  setTimeout(() => toast.remove(), 3000);
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
 }
-
-// ============================
-// BADGES
-// ============================
 
 function getBadge(product) {
   if (product.badge) return product.badge;
@@ -40,20 +37,19 @@ function getBadge(product) {
   return "";
 }
 
-// ============================
-// DISPLAY PRODUCTS
-// ============================
-
 function displayProducts(list) {
+
   if (!container) return;
 
   container.innerHTML = "";
 
   list.forEach(product => {
+
     const div = document.createElement("div");
     div.classList.add("product");
 
     div.innerHTML = `
+
       ${getBadge(product)
         ? `<div class="badge">${getBadge(product)}</div>`
         : ""
@@ -67,38 +63,40 @@ function displayProducts(list) {
 
       <h3>${product.name}</h3>
 
-      ${
-        product.rating
-          ? `
-            <div class="rating">
-              <span class="rating-stars">★★★★★</span>
-              <span class="rating-number">${product.rating}</span>
-              <span class="review-count">(${product.reviews || 0} reviews)</span>
-            </div>
-          `
-          : ""
+      ${product.rating
+        ? `
+          <div class="rating">
+            <span class="rating-stars">★★★★★</span>
+            <span class="rating-number">${product.rating}</span>
+            <span class="review-count">(${product.reviews || 0} reviews)</span>
+          </div>
+        `
+        : ""
       }
 
       <p class="price">
-        <del>KSh ${product.oldPrice}</del>
+        <del>KSh ${product.oldPrice || ""}</del>
         <strong>KSh ${product.price}</strong>
       </p>
 
-      ${
-        product.stock && product.stock <= 5
-          ? `<p class="stock">Only ${product.stock} left</p>`
-          : ""
+      ${product.stock && product.stock <= 5
+        ? `<p class="stock">Only ${product.stock} left</p>`
+        : ""
       }
 
       <div class="product-actions">
 
-        <button class="whatsapp-btn"
-          onclick="window.open('https://wa.me/254113505681?text=I want ${product.name}', '_blank')">
+        <button
+          class="whatsapp-btn"
+          onclick="window.open('https://wa.me/254113505681?text=Hello Nairobi Perfumes, I want ${product.name}','_blank')"
+        >
           Order on WhatsApp
         </button>
 
-        <button class="cart-btn"
-          onclick="addToCart('${product.name}', ${product.price}, ${product.stock || 999})">
+        <button
+          class="cart-btn"
+          onclick="addToCart('${product.name}', ${product.price})"
+        >
           Add to Cart
         </button>
 
@@ -108,63 +106,6 @@ function displayProducts(list) {
     container.appendChild(div);
   });
 }
-
-// ============================
-// INIT
-// ============================
-
-displayProducts(products);
-updateCartCount();
-
-// ============================
-// SEARCH
-// ============================
-
-const suggestionsBox = document.getElementById("searchSuggestions");
-
-searchBar?.addEventListener("input", (e) => {
-  const value = e.target.value.toLowerCase().trim();
-
-  let filtered = applyFilters();
-
-  filtered = filtered.filter(p =>
-    p.name.toLowerCase().includes(value)
-  );
-
-  displayProducts(filtered);
-
-  if (!suggestionsBox) return;
-
-  suggestionsBox.innerHTML = "";
-
-  if (!value) {
-    suggestionsBox.style.display = "none";
-    return;
-  }
-
-  filtered.slice(0, 5).forEach(product => {
-    const div = document.createElement("div");
-    div.classList.add("search-suggestion-item");
-    div.innerText = product.name;
-
-    div.onclick = () => {
-      searchBar.value = product.name;
-      suggestionsBox.style.display = "none";
-      displayProducts([product]);
-
-      document.getElementById("products")
-        ?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    suggestionsBox.appendChild(div);
-  });
-
-  suggestionsBox.style.display = filtered.length ? "block" : "none";
-});
-
-// ============================
-// FILTERS
-// ============================
 
 function applyFilters() {
   let filtered = products;
@@ -184,20 +125,44 @@ function applyFilters() {
   return filtered;
 }
 
-// ============================
-// CART SYSTEM
-// ============================
+function filterCategory(category) {
+  activeFilters.category = category;
+  displayProducts(applyFilters());
+}
 
-function addToCart(name, price, stock = 999) {
-  if (stock <= 0) {
-    showToast("Sorry, this item is out of stock", "error");
-    return;
-  }
+function filterGender(gender) {
+  activeFilters.gender = gender;
+  displayProducts(applyFilters());
+}
+
+function filterBrand(brand) {
+  activeFilters.brand = brand;
+  displayProducts(applyFilters());
+}
+
+function resetFilters() {
+  activeFilters = {
+    category: "all",
+    gender: null,
+    brand: null
+  };
+
+  displayProducts(products);
+}
+
+function addToCart(name, price) {
 
   const item = cart.find(i => i.name === name);
 
-  if (item) item.qty++;
-  else cart.push({ name, price, qty: 1 });
+  if (item) {
+    item.qty++;
+  } else {
+    cart.push({
+      name,
+      price,
+      qty: 1
+    });
+  }
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
@@ -205,12 +170,8 @@ function addToCart(name, price, stock = 999) {
   renderCart();
   bounceCart();
 
-  showToast(`${name} added to cart`, "success");
+  showToast(`${name} added to cart`);
 }
-
-// ============================
-// CART COUNT
-// ============================
 
 function updateCartCount() {
   const count = document.getElementById("cart-count");
@@ -219,60 +180,35 @@ function updateCartCount() {
   count.innerText = cart.reduce((a, b) => a + b.qty, 0);
 }
 
-// ============================
-// BOUNCE CART
-// ============================
-
 function bounceCart() {
   const cartIcon = document.getElementById("cart-icon");
+
   if (!cartIcon) return;
 
   cartIcon.classList.add("bounce");
-  setTimeout(() => cartIcon.classList.remove("bounce"), 400);
-}
 
-// ============================
-// CART TOGGLE
-// ============================
+  setTimeout(() => {
+    cartIcon.classList.remove("bounce");
+  }, 400);
+}
 
 function toggleCart() {
   const panel = document.getElementById("cart-panel");
   const overlay = document.getElementById("cart-overlay");
 
-  if (!panel || !overlay) return;
+  panel.classList.toggle("open");
 
-  const isOpen = panel.classList.contains("open");
-
-  if (isOpen) {
-    panel.classList.remove("open");
-    overlay.style.display = "none";
-  } else {
-    panel.classList.add("open");
+  if (panel.classList.contains("open")) {
     overlay.style.display = "block";
-    renderCart();
-  }
-}
-
-// ============================
-// CHECKOUT FIX (🔥 IMPORTANT)
-// ============================
-
-function checkoutCart() {
-  if (!cart || cart.length === 0) {
-    showToast("Your cart is empty", "error");
-    return;
+  } else {
+    overlay.style.display = "none";
   }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  window.location.href = "checkout.html";
+  renderCart();
 }
-
-// ============================
-// RENDER CART
-// ============================
 
 function renderCart() {
+
   const container = document.getElementById("cart-items");
   const totalBox = document.getElementById("cart-total");
 
@@ -289,6 +225,7 @@ function renderCart() {
   }
 
   cart.forEach((item, index) => {
+
     total += item.price * item.qty;
 
     container.innerHTML += `
@@ -314,22 +251,13 @@ function renderCart() {
   totalBox.innerHTML = `<strong>Total: KSh ${total}</strong>`;
 }
 
-// ============================
-// CART ACTIONS
-// ============================
-
-function removeItem(index) {
-  cart.splice(index, 1);
-  localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartCount();
-  renderCart();
-  showToast("Item removed", "info");
-}
-
 function changeQty(index, change) {
+
   cart[index].qty += change;
 
-  if (cart[index].qty <= 0) cart.splice(index, 1);
+  if (cart[index].qty <= 0) {
+    cart.splice(index, 1);
+  }
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
@@ -337,22 +265,38 @@ function changeQty(index, change) {
   renderCart();
 }
 
-// ============================
-// QUICK VIEW
-// ============================
+function removeItem(index) {
+
+  cart.splice(index, 1);
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  updateCartCount();
+  renderCart();
+
+  showToast("Item removed", "error");
+}
+
+function checkoutCart() {
+
+  if (cart.length === 0) {
+    showToast("Your cart is empty", "error");
+    return;
+  }
+
+  window.location.href = "checkout.html";
+}
 
 function openQuickView(name, price, image) {
-  const modal = document.getElementById("quick-view");
-  if (!modal) return;
 
-  modal.style.display = "flex";
+  document.getElementById("quick-view").style.display = "flex";
 
   document.getElementById("qv-image").src = image;
   document.getElementById("qv-name").innerText = name;
-  document.getElementById("qv-price").innerText = "KSh " + price;
+  document.getElementById("qv-price").innerText = `KSh ${price}`;
 
   document.getElementById("qv-whatsapp").onclick = () => {
-    window.open("https://wa.me/254113505681?text=I want " + name, "_blank");
+    window.open(`https://wa.me/254113505681?text=Hello Nairobi Perfumes, I want ${name}`, "_blank");
   };
 
   document.getElementById("qv-cart").onclick = () => {
@@ -361,45 +305,96 @@ function openQuickView(name, price, image) {
 }
 
 function closeQuickView() {
-  document.getElementById("quick-view")?.style.setProperty("display", "none");
+  document.getElementById("quick-view").style.display = "none";
 }
-
-// ============================
-// MOBILE MENU
-// ============================
 
 function toggleMenu() {
   document.querySelector("nav")?.classList.toggle("show-nav");
 }
 
-// ============================
-// HERO SLIDER
-// ============================
+searchBar?.addEventListener("input", (e) => {
+
+  const value = e.target.value.toLowerCase().trim();
+
+  let filtered = applyFilters();
+
+  filtered = filtered.filter(product =>
+    product.name.toLowerCase().includes(value)
+  );
+
+  displayProducts(filtered);
+
+  if (!suggestionsBox) return;
+
+  suggestionsBox.innerHTML = "";
+
+  if (!value) {
+    suggestionsBox.style.display = "none";
+    return;
+  }
+
+  filtered.slice(0, 5).forEach(product => {
+
+    const div = document.createElement("div");
+
+    div.classList.add("search-suggestion-item");
+
+    div.innerText = product.name;
+
+    div.onclick = () => {
+
+      searchBar.value = product.name;
+
+      suggestionsBox.style.display = "none";
+
+      displayProducts([product]);
+
+      scrollToProducts();
+    };
+
+    suggestionsBox.appendChild(div);
+  });
+
+  suggestionsBox.style.display = filtered.length ? "block" : "none";
+});
 
 const slides = document.querySelectorAll(".hero-slide");
 let currentSlide = 0;
 
 function showSlide(index) {
-  slides.forEach(s => s.classList.remove("active"));
+  slides.forEach(slide => slide.classList.remove("active"));
   slides[index]?.classList.add("active");
 }
 
-setInterval(() => {
-  currentSlide++;
-  if (currentSlide >= slides.length) currentSlide = 0;
-  showSlide(currentSlide);
-}, 4000);
+if (slides.length > 0) {
+  setInterval(() => {
+    currentSlide++;
 
-// ============================
-// ESC CLOSE CART
-// ============================
+    if (currentSlide >= slides.length) {
+      currentSlide = 0;
+    }
+
+    showSlide(currentSlide);
+  }, 4000);
+}
 
 document.addEventListener("keydown", (e) => {
+
   if (e.key === "Escape") {
+
+    document.getElementById("quick-view").style.display = "none";
+
     const panel = document.getElementById("cart-panel");
     const overlay = document.getElementById("cart-overlay");
 
     panel?.classList.remove("open");
-    if (overlay) overlay.style.display = "none";
+
+    if (overlay) {
+      overlay.style.display = "none";
+    }
   }
 });
+
+displayProducts(products);
+updateCartCount();
+renderCart();

@@ -21,7 +21,7 @@ const products = [
     brand: "Lattafa",
     image: "images/yara.jpg",
     badge: "Best for ladies",
-    Rating: 4.9,
+    rating: 4.9,
     reviews: 60,    
     stock: 12
   },
