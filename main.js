@@ -55,13 +55,18 @@ function displayProducts(list) {
         : ""
       }
 
-      <img
-        src="${product.image}"
-        alt="${product.name}"
-        onclick="openQuickView('${product.name}', ${product.price}, '${product.image}')"
-      >
+      <a href="product.html?id=${product.id}">
+  <img
+    src="${product.image}"
+    alt="${product.name}"
+  >
+</a>
 
-      <h3>${product.name}</h3>
+      <h3>
+  <a href="product.html?id=${product.id}" class="product-link">
+    ${product.name}
+  </a>
+</h3>
 
       ${product.rating
         ? `
