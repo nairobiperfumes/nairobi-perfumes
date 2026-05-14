@@ -672,7 +672,7 @@ const products = [
     brand: "Lattafa",
     collection: "New Arrivals",
     status: "active",
-    image: "images/nebras-elixir.jpg",
+    image: "images/nebras-elixir-1.jpg",
     images: [
       "images/nebras-elixir-1.jpg",
       "images/nebras-elixir-2.jpg",
@@ -701,7 +701,7 @@ const products = [
     brand: "Lattafa",
     collection: "Women Picks",
     status: "active",
-    image: "images/eclaire-pistach.jpg",
+    image: "images/eclaire-pistach-1.jpg",
     images: [
       "images/eclaire-pistach-1.jpg",
       "images/eclaire-pistach-2.jpg",
@@ -730,7 +730,7 @@ const products = [
     brand: "Lattafa",
     collection: "Best Sellers",
     status: "active",
-    image: "images/noble-blush.jpg",
+    image: "images/noble-blush-1.jpg",
     images: [
       "images/noble-blush-1.jpg",
       "images/noble-blush-2.jpg",
@@ -759,7 +759,7 @@ const products = [
     brand: "Lattafa",
     collection: "Women Picks",
     status: "active",
-    image: "images/mayar-cherry.jpg",
+    image: "images/mayar-cherry-1.jpg",
     images: [
       "images/mayar-cherry-1.jpg",
       "images/mayar-cherry-2.jpg",
@@ -788,7 +788,7 @@ const products = [
     brand: "Lattafa",
     collection: "Women Best Sellers",
     status: "active",
-    image: "images/yara-moi.jpg",
+    image: "images/yara-moi-1.jpg",
     images: [
       "images/yara-moi-1.jpg",
       "images/yara-moi-2.jpg",
@@ -817,7 +817,7 @@ const products = [
     brand: "Lattafa",
     collection: "Women Luxury",
     status: "active",
-    image: "images/fakhar-women.jpg",
+    image: "images/fakhar-women-1.jpg",
     images: [
       "images/fakhar-women-1.jpg",
       "images/fakhar-women-2.jpg",
@@ -846,7 +846,7 @@ const products = [
     brand: "Lattafa",
     collection: "Luxury Picks",
     status: "active",
-    image: "images/ansaam-gold.jpg",
+    image: "images/ansaam-gold-1.jpg",
     images: [
       "images/ansaam-gold-1.jpg",
       "images/ansaam-gold-2.jpg",
